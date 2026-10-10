@@ -58,6 +58,11 @@ export const AdminGameForm = ({
   }, [selectedGame]);
 
   const handleChange = (name: keyof GamePayload, value: string) => {
+    // FIX 1: mỗi lần đổi URL ảnh bìa thì cho phép thử load lại preview
+    if (name === "coverImageUrl") {
+      setPreviewFailed(false);
+    }
+
     setForm((current: any) => ({
       ...current,
       [name]:
@@ -76,6 +81,7 @@ export const AdminGameForm = ({
     // Convert numeric strings back to numbers before submission
     const finalPayload: GamePayload = {
       ...form,
+      coverImageUrl: (form.coverImageUrl || "").trim(),
       price: Number(form.price) || 0,
       discountPercent: Number(form.discountPercent) || 0,
     };
@@ -88,11 +94,15 @@ export const AdminGameForm = ({
           price: "",
           discountPercent: "",
         });
+        // FIX 2: reset trạng thái preview sau khi publish xong
+        setPreviewFailed(false);
       }
     } finally {
       setSubmitting(false);
     }
   };
+
+  const coverUrl = (form.coverImageUrl || "").trim();
 
   return (
     <form className="panel game-form-container" onSubmit={handleSubmit}>
@@ -221,21 +231,19 @@ export const AdminGameForm = ({
 
           <div className="cover-preview-card">
             <label className="eyebrow-label">Visual Preview</label>
-            {form.coverImageUrl && !previewFailed ? (
+            {coverUrl && !previewFailed ? (
               <img
+                key={coverUrl}
                 className="cover-preview-media"
-                src={form.coverImageUrl}
+                src={coverUrl}
                 alt="Game cover preview"
+                referrerPolicy="no-referrer"
                 onError={() => setPreviewFailed(true)}
               />
             ) : (
               <div className="cover-preview-empty">
                 <strong>{form.title ? form.title.slice(0, 2).toUpperCase() : "SL"}</strong>
-                <p>
-                  {form.coverImageUrl
-                    ? "Image load failed"
-                    : "Ready for your art"}
-                </p>
+                <p>{coverUrl ? "Image load failed" : "Ready for your art"}</p>
               </div>
             )}
             <div className="preview-meta">
