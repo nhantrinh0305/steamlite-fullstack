@@ -86,6 +86,11 @@ export const AdminGameForm = ({
       discountPercent: Number(form.discountPercent) || 0,
     };
 
+    // Hidden discounts must be omitted: developer endpoints reject even a zero value.
+    if (!showDiscountField) {
+      delete finalPayload.discountPercent;
+    }
+
     try {
       await onSubmit(finalPayload);
       if (!selectedGame) {
