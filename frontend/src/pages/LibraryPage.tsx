@@ -2,16 +2,27 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiRequest, ApiError } from "../api/client";
 import { LibraryItem } from "../types";
-import { useAuth } from "../context/AuthContext";
 
 export const LibraryPage = () => {
-  const { user } = useAuth();
   const [library, setLibrary] = useState<LibraryItem[]>([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [copyStatus, setCopyStatus] = useState<{ id: number; text: string } | null>(null);
+
+  const copyKey = async (entry: LibraryItem) => {
+    if (!entry.licenseKey) return;
+    try {
+      await navigator.clipboard.writeText(entry.licenseKey);
+      setCopyStatus({ id: entry.id, text: "Key copied." });
+    } catch {
+      setCopyStatus({ id: entry.id, text: "Unable to copy automatically. Select and copy the key above." });
+    }
+  };
 
   const loadLibrary = async () => {
     setLoading(true);
+    setMessage("");
+    setCopyStatus(null);
 
     try {
       const response = await apiRequest<{ library: LibraryItem[] }>("/library/me");
@@ -58,7 +69,7 @@ export const LibraryPage = () => {
         ) : (
           <div className="list-grid">
             {library.map((entry) => {
-              const isCreator = user?.role === "DEVELOPER" && entry.game.developerUserId === user.id;
+              const isCreator = entry.id < 0;
 
               return (
                 <article key={entry.id} className="panel list-card">
@@ -86,6 +97,24 @@ export const LibraryPage = () => {
                           {new Date(entry.purchasedAt).toLocaleString()}
                         </span>
                       </div>
+                      {isCreator ? (
+                        <p className="muted">Creator access</p>
+                      ) : (
+                        <div className="library-license">
+                          <strong>Demo license key</strong>
+                          <code className="library-license-key">{entry.licenseKey}</code>
+                          <button
+                            className="button button-secondary"
+                            onClick={() => copyKey(entry)}
+                            disabled={!entry.licenseKey}
+                            aria-label={`Copy demo license key for ${entry.game.title}`}
+                          >
+                            Copy key
+                          </button>
+                          <small className="muted">For demonstration only. This key cannot activate a real game.</small>
+                          <span role="status">{copyStatus?.id === entry.id ? copyStatus.text : ""}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

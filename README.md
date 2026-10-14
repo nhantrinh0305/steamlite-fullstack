@@ -64,7 +64,7 @@ cd backend
 cp .env.example .env
 npm install
 npx prisma generate
-npx prisma db push
+npm run prisma:migrate
 npm run seed
 npm run dev
 ```
@@ -128,6 +128,9 @@ After running the seed:
 - `PATCH /api/admin/users/:id/role`
 
 ## Implementation notes
+
+- Purchased games receive a unique, persistent mock license key, visible and copyable in the owner's library. Keys cannot activate real games; downloading, installation, and execution are outside scope. Developer-created library entries show creator access instead.
+- For an existing database, run `npm run prisma:migrate` and `npm run prisma:generate` from `backend`, then restart the backend. The migration preserves purchases and assigns keys to existing library records. Do not reset or reseed an existing database to apply this update.
 
 - The data model is based on the report's data dictionary.
 - Role handling follows the report's user types: Customer, Developer, Admin.

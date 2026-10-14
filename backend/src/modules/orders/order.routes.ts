@@ -1,4 +1,5 @@
 import { randomBytes } from "crypto";
+import { generateMockLicenseKey } from "../../utils/licenseKey";
 import { Router } from "express";
 import { prisma } from "../../lib/prisma";
 import { asyncHandler } from "../../utils/asyncHandler";
@@ -249,6 +250,7 @@ orderRouter.post(
             userId: req.user!.id,
             gameId: item.gameId,
             purchasedAt,
+            licenseKey: generateMockLicenseKey(),
           },
         });
       }

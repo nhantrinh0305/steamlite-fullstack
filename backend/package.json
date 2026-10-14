@@ -5,9 +5,11 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
+    "test:licenses": "npm run build && node --test tests/license-keys.test.cjs",
     "start": "node dist/src/server.js",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
+    "prisma:migrate": "prisma migrate deploy",
     "seed": "node prisma/seed-runner.cjs",
     "seed:reset": "node prisma/seed-runner.cjs"
   },

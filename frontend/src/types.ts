@@ -72,6 +72,7 @@ export type Wishlist = {
 
 export type LibraryItem = {
   id: number;
+  licenseKey: string | null;
   purchasedAt: string;
   game: Game;
 };

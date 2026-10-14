@@ -1098,6 +1098,19 @@ textarea {
   }
 }
 
+.library-license {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.library-license-key {
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
 .library-cover {
   min-height: 130px;
   min-width: 200px;

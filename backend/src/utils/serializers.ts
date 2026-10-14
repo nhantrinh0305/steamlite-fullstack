@@ -118,6 +118,7 @@ export const serializeOrder = (order: any) => ({
 
 export const serializeLibraryItem = (libraryItem: any) => ({
   id: libraryItem.id,
+  licenseKey: libraryItem.licenseKey || null,
   purchasedAt: libraryItem.purchasedAt,
   game: serializeGame(libraryItem.game),
 });

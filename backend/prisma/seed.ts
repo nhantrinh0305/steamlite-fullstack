@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import { generateMockLicenseKey } from "../src/utils/licenseKey";
 import { PrismaClient } from "@prisma/client";
 import { calculateDiscountedPrice } from "../src/utils/pricing";
 import { calculateRevenueSplit } from "../src/utils/revenue";
@@ -1059,6 +1060,7 @@ async function main() {
       data: selectedGames.map((game) => ({
         userId: orderSeed.userId,
         gameId: game.id,
+        licenseKey: generateMockLicenseKey(),
       })),
     });
   }
